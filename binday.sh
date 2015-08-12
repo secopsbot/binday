@@ -14,7 +14,7 @@ wget -q -O $tmpfile "$bindayurl"
 
 if [ -e $tmpfile ]
 then
-  hasdata=`grep -E '(Household waste bin|Mixed recycling box|Paper recycling bin|Garden waste recycling bin)' $tmpfile`
+  hasdata=`grep -E '(Household waste bin|Mixed recycling bin|Garden waste recycling bin)' $tmpfile`
   if [ -z "$hasdata" ]
   then
     echo "Cant find data yo."
@@ -30,9 +30,7 @@ fi
 #Household waste bin
 housenext=`grep "Household waste bin" $tmpfile | awk -F "next collection will be on" '{ print $2 }'| awk  -F "." '{ print $1 }' | sed -e 's/\///g' -e 's/ //g'`
 #Mixed recycling box
-mixednext=`grep "Mixed recycling box" $tmpfile | awk -F "next collection will be on" '{ print $2 }'| awk  -F "." '{ print $1 }' | sed -e 's/\///g' -e 's/ //g'`
-#Paper recycling bin
-papernext=`grep "Paper recycling bin" $tmpfile | awk -F "next collection will be on" '{ print $2 }'| awk  -F "." '{ print $1 }' | sed -e 's/\///g' -e 's/ //g'`
+mixednext=`grep "Mixed recycling bin" $tmpfile | awk -F "next collection will be on" '{ print $2 }'| awk  -F "." '{ print $1 }' | sed -e 's/\///g' -e 's/ //g'`
 #Garden waste recycling bin
 gardennext=`grep "Garden waste recycling bin" $tmpfile | awk -F "next collection will be on" '{ print $2 }'| awk  -F "." '{ print $1 }' | sed -e 's/\///g' -e 's/ //g'`
 
@@ -42,7 +40,6 @@ echo "---Data---"
 echo "Tomorrows Date: $tomorrow"
 echo "Household Collection: $housenext"
 echo "Mixed Recycle Collection: $mixednext"
-echo "Paper Collection: $papernext"
 echo "Garden Collection: $gardennext"
 echo "---END DATA---"
 
@@ -53,7 +50,6 @@ then
   then
     output="$output Put the fucking household waste bin out. (Big Green One)\n\n"
     sendnotif=1
- #   echo "Put the fucking household waste bin out. (Big Green One)\n"
   fi
 fi
 
@@ -62,17 +58,7 @@ if [ -n "$mixednext" ]
 then
   if [ "$tomorrow" -eq "$mixednext" ]
   then
-    output="$output Put the fucking mixed recycling box out. (Little green one - That we don't have)\n\n"
-    sendnotif=1
-  fi
-fi
-
-#Paper recycling bin
-if [ -n "$papernext" ]
-then
-  if [ "$tomorrow" -eq "$papernext" ]
-  then
-    output="$output Put the fucking paper recycling bin out. (Big brown one without holes.)\n\n"
+    output="$output Put the fucking mixed recycling bin out. (Brown One without holes)\n\n"
     sendnotif=1
   fi
 fi
