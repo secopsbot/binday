@@ -1,14 +1,47 @@
 #!/bin/bash
 
-bindayurl=""
-tmpfile='/tmp/localdata.tmp'
-tomorrow=`date +"%-d%-m%Y" -d "tomorrow"`
-tomorrow_nice=`date +"%d/%m/%Y" -d "tomorrow"`
+binday_config="/etc/binday/binday.cfg"
+
+#check that the binday config file exists.
+if [ -a $binday_config ]
+then
+  source /etc/binday/binday.cfg
+else
+  echo "Please ensure $binday_config exists."
+fi
+
+#Check that the binday url is set.
+if [ -z $BINDAY_URL ]
+then
+  echo "URL is not set, please correct this in $binday_config"
+  exit
+fi
+
+#Check that the pushover details are set.
+if [ -z $PUSHOVER_TOKEN ] || [ -z $PUSHOVER_USER ]
+then
+  echo "Your pushover API details are blank, please correct this in $binday_config"
+  exit
+fi
+
+#Check if a fake tomorrow date has been set in the config, if not continue.
+
+if [ $TOMORROW ]
+then
+  echo "Using fake date set in config!"
+  echo "Fake date: $TOMORROW"
+  tomorrow=$TOMORROW
+else
+  tomorrow=`date +"%-d%-m%Y" -d "tomorrow"`
+  tomorrow_nice=`date +"%d/%m/%Y" -d "tomorrow"`
+fi
+
+tmpfile='/tmp/binday.tmp'
 
 echo "$(date +"%m-%d-%Y-%T"): Starting bin run"
 
 #Pull down local news into tmp
-wget -q -O $tmpfile "$bindayurl"
+wget -q -O $tmpfile "$BINDAY_URL"
 
 #Check contents of file, if not valid then error
 
@@ -80,8 +113,8 @@ then
   echo -e $output
   echo "Sending Notification"
   curl -s \
-    --form-string "token=" \
-    --form-string "user=" \
+    --form-string "token=$PUSHOVER_TOKEN" \
+    --form-string "user=$PUSHOVER_USER" \
     --form-string "message=$(echo -e $output)" \
     https://api.pushover.net/1/messages.json
 fi
