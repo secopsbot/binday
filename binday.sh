@@ -61,11 +61,11 @@ fi
 #scrape and store next bin collection dates
 
 #Household waste bin
-housenext=`grep "Household waste bin" $tmpfile | awk -F "next collection will be on" '{ print $2 }'| awk  -F "." '{ print $1 }' | sed -e 's/\///g' -e 's/ //g'`
+housenext=`grep "Household waste bin" $tmpfile | awk -F "next collection will be on" '{ print $2 }'| awk  -F "." '{ print $1 }' | sed -e 's/\///g' -e 's/ //g' -e 's/<[^>]*>//g'`
 #Mixed recycling box
-mixednext=`grep "Mixed recycling bin" $tmpfile | awk -F "next collection will be on" '{ print $2 }'| awk  -F "." '{ print $1 }' | sed -e 's/\///g' -e 's/ //g'`
+mixednext=`grep "Mixed recycling bin" $tmpfile | awk -F "next collection will be on" '{ print $2 }'| awk  -F "." '{ print $1 }' | sed -e 's/\///g' -e 's/ //g' -e 's/<[^>]*>//g'`
 #Garden waste recycling bin
-gardennext=`grep "Garden waste recycling bin" $tmpfile | awk -F "next collection will be on" '{ print $2 }'| awk  -F "." '{ print $1 }' | sed -e 's/\///g' -e 's/ //g'`
+gardennext=`grep "Garden waste recycling bin" $tmpfile | awk -F "next collection will be on" '{ print $2 }'| awk  -F "." '{ print $1 }' | sed -e 's/\///g' -e 's/ //g' -e 's/<[^>]*>//g'`
 
 #Compare dates and send notification if the bin needs putting out tonight.
 output="Tomorrows Date: $tomorrow_nice\n\n"
